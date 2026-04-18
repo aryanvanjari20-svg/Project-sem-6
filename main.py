@@ -1,14 +1,28 @@
+import sys
+import types
 import asyncio
 import os
 import warnings
+import shutil
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 warnings.filterwarnings("ignore")
+
+# Point pydub to real ffmpeg/ffprobe (winget install path)
+import pydub.utils as _pydub_utils
+from pydub import AudioSegment as _AudioSegment
+_FFMPEG_BIN = r"C:\Users\sidva\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin"
+_FFMPEG = _FFMPEG_BIN + r"\ffmpeg.exe"
+_FFPROBE = _FFMPEG_BIN + r"\ffprobe.exe"
+_pydub_utils.get_encoder_name = lambda: _FFMPEG
+_pydub_utils.get_prober_name = lambda: _FFPROBE
+_AudioSegment.converter = _FFMPEG
+_AudioSegment.ffmpeg = _FFMPEG
+_AudioSegment.ffprobe = _FFPROBE
 
 app = FastAPI(title="TTS API")
 
@@ -21,8 +35,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-OUTPUT_DIR = Path("outputs")
+BASE_DIR = Path(__file__).parent
+OUTPUT_DIR = BASE_DIR / "outputs"
 OUTPUT_DIR.mkdir(exist_ok=True)
+CLONE_DIR = BASE_DIR / "outputs/clone"
+CLONE_DIR.mkdir(exist_ok=True)
 
 # ── Voice Database ─────────────────────────────────────────────────────────────
 VOICE_DB = {
@@ -167,7 +184,13 @@ async def _generate_speech(text, voice_code, output_file, rate, pitch, volume):
     with open(output_file, "wb") as f:
         f.write(b"".join(audio_chunks))
 
-    return build_subtitles(word_events)
+    vtt, srt = build_subtitles(word_events)
+
+    srt_path = Path(output_file).parent / "output.srt"
+    with open(srt_path, "w", encoding="utf-8") as f:
+        f.write(srt)
+
+    return vtt, srt
 
 
 # ── Request/Response Models ────────────────────────────────────────────────────
@@ -211,3 +234,68 @@ def get_audio():
     if not audio_path.exists():
         raise HTTPException(status_code=404, detail="No audio generated yet.")
     return FileResponse(str(audio_path), media_type="audio/mpeg", filename="speech.mp3")
+
+
+# ── Voice Cloning (OpenVoice) ──────────────────────────────────────────────────
+@app.post("/api/clone")
+async def clone_voice(text: str = Form(...), file: UploadFile = File(...)):
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty.")
+
+    ref_path = CLONE_DIR / f"ref_{file.filename}"
+    with open(ref_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    output_path = str(CLONE_DIR / "cloned_output.wav")
+    base_output = str(CLONE_DIR / "base_output.wav")
+
+    try:
+        import torch
+        from openvoice import se_extractor
+        from openvoice.api import ToneColorConverter
+        from melo.api import TTS
+
+        ckpt_dir = BASE_DIR / "openvoice_checkpoints/checkpoints_v2/converter"
+        if not ckpt_dir.exists():
+            raise HTTPException(
+                status_code=500,
+                detail="OpenVoice checkpoints not found. Run: python setup_openvoice.py"
+            )
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        # Step 1 — Generate base speech with MeloTTS
+        tts_model = TTS(language="EN", device=device)
+        spk2id = dict(tts_model.hps.data.spk2id)
+        speaker_id = spk2id.get("EN-Default") or list(spk2id.values())[0]
+        tts_model.tts_to_file(text, speaker_id, base_output, speed=1.0)
+
+        # Step 2 — Extract tone color from reference audio
+        tone_converter = ToneColorConverter(str(ckpt_dir / "config.json"), device=device)
+        tone_converter.load_ckpt(str(ckpt_dir / "checkpoint.pth"))
+
+        target_se, _ = se_extractor.get_se(str(ref_path), tone_converter, vad=True)
+        source_se = torch.load(str(BASE_DIR / "openvoice_checkpoints/checkpoints_v2/base_speakers/ses/en-default.pth"), map_location=device)
+
+        # Step 3 — Convert tone color
+        tone_converter.convert(
+            audio_src_path=base_output,
+            src_se=source_se,
+            tgt_se=target_se,
+            output_path=output_path,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return FileResponse(output_path, media_type="audio/wav", filename="cloned_speech.wav")
+
+
+@app.get("/api/srt")
+def get_srt():
+    srt_path = OUTPUT_DIR / "output.srt"
+    if not srt_path.exists():
+        raise HTTPException(status_code=404, detail="No SRT generated yet.")
+    return FileResponse(str(srt_path), media_type="text/plain", filename="subtitles.srt")

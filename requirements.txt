@@ -1,2 +1,7 @@
-streamlit
+fastapi
+uvicorn
 edge-tts
+python-multipart
+torch
+openvoice
+melo-tts
