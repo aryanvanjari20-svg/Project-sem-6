@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 const NAV_ITEMS = [
   { icon: '⊞', label: 'Home',           path: '/home' },
   { icon: '🎙️', label: 'Text to Speech', path: '/text-to-speech' },
+  { icon: '🎤', label: 'Voice Cloning',  path: '/voice-clone' },
   { icon: '🔊', label: 'Sound Effects',  path: '#' },
   { icon: '🖼️', label: 'Image & Video',  path: '#' },
   { icon: '🔀', label: 'Flows',          path: '#' },
@@ -13,7 +14,7 @@ const NAV_ITEMS = [
 
 const PINNED = [
   { icon: '🎙️', label: 'Text to Speech', path: '/text-to-speech' },
-  { icon: '🔊', label: 'Sound Effects',  path: '#' },
+  { icon: '🎤', label: 'Voice Cloning',  path: '/voice-clone' },
 ]
 
 export default function Sidebar({ theme, onThemeToggle }) {

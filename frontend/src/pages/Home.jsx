@@ -20,7 +20,7 @@ const LIBRARY_ITEMS = [
 
 const VOICE_CLONE_CARDS = [
   { icon: '✨', bg: '#7c3aed', label: 'Voice Design',      subtitle: 'Design an entirely new voice from a text prompt' },
-  { icon: '🎤', bg: '#0ea5e9', label: 'Clone your Voice',  subtitle: 'Create a realistic digital clone of your voice' },
+  { icon: '🎤', bg: '#0ea5e9', label: 'Clone your Voice',  subtitle: 'Create a realistic digital clone of your voice', path: '/voice-clone' },
   { icon: '📚', bg: '#10b981', label: 'Voice Collections', subtitle: 'Curated AI voices for every use case' },
 ]
 
@@ -90,8 +90,8 @@ export default function Home() {
         <div>
           <p className="section-heading">Create or clone a voice</p>
           <div className="clone-grid">
-            {VOICE_CLONE_CARDS.map(({ icon, bg, label, subtitle }) => (
-              <div className="clone-item" key={label} onClick={() => go('/text-to-speech')}>
+            {VOICE_CLONE_CARDS.map(({ icon, bg, label, subtitle, path }) => (
+              <div className="clone-item" key={label} onClick={() => go(path || '/text-to-speech')}>
                 <div className="clone-icon" style={{ background: bg + '33', color: bg }}>
                   {icon}
                 </div>

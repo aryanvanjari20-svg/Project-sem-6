@@ -221,15 +221,13 @@ export default function TextToSpeech() {
                     ⬇ VTT
                   </button>
                 )}
-                {result.srt && (
-                  <button
-                    id="btn-dl-srt"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => downloadText(result.srt, 'subtitles.srt')}
-                  >
-                    ⬇ SRT
-                  </button>
-                )}
+                <button
+                  id="btn-dl-srt"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => downloadFile(`${API}/api/srt`, 'subtitles.srt', 'text/plain')}
+                >
+                  ⬇ SRT
+                </button>
                 {result.srt && (
                   <button
                     id="btn-captions"
