@@ -9,7 +9,9 @@ from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
+load_dotenv()
 warnings.filterwarnings("ignore")
 
 # Point pydub to real ffmpeg/ffprobe (winget install path)
@@ -299,3 +301,27 @@ def get_srt():
     if not srt_path.exists():
         raise HTTPException(status_code=404, detail="No SRT generated yet.")
     return FileResponse(str(srt_path), media_type="text/plain", filename="subtitles.srt")
+
+
+# ── AI Chatbot ────────────────────────────────────────────────────────────────
+class ChatRequest(BaseModel):
+    messages: list
+    model: str = "llama-3.3-70b-versatile"
+
+
+@app.post("/api/chat")
+async def chat(req: ChatRequest):
+    from groq import Groq
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="GROQ_API_KEY not set.")
+    client = Groq(api_key=api_key)
+    response = client.chat.completions.create(
+        model=req.model,
+        messages=[
+            {"role": "system", "content": "You are a helpful AI assistant inside SoundStudio, a text-to-speech and voice cloning app. Be concise and friendly."},
+            *req.messages,
+        ],
+        max_tokens=1024,
+    )
+    return {"reply": response.choices[0].message.content}
