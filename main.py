@@ -51,6 +51,8 @@ VOICE_DB = {
                 "Aria — Natural, Conversational": "en-US-AriaNeural",
                 "Jenny — Friendly": "en-US-JennyNeural",
                 "Michelle — Warm": "en-US-MichelleNeural",
+                "Ava — Soft": "en-US-AvaNeural",
+                "Emma — Professional": "en-US-EmmaNeural",
             },
             "Male": {
                 "Guy — Casual": "en-US-GuyNeural",
@@ -58,6 +60,8 @@ VOICE_DB = {
                 "Christopher — Confident": "en-US-ChristopherNeural",
                 "Eric — Clear": "en-US-EricNeural",
                 "Roger — Bold": "en-US-RogerNeural",
+                "Andrew — Friendly": "en-US-AndrewNeural",
+                "Brian — Deep": "en-US-BrianNeural",
             },
         },
         "United Kingdom": {
@@ -65,10 +69,12 @@ VOICE_DB = {
                 "Sonia — British": "en-GB-SoniaNeural",
                 "Libby — Bright": "en-GB-LibbyNeural",
                 "Maisie — Soft": "en-GB-MaisieNeural",
+                "Abbi — Natural": "en-GB-AbbiNeural",
             },
             "Male": {
                 "Ryan — Natural": "en-GB-RyanNeural",
                 "Thomas — Formal": "en-GB-ThomasNeural",
+                "Alfie — Relaxed": "en-GB-AlfieNeural",
             },
         },
         "Australia": {
@@ -76,14 +82,27 @@ VOICE_DB = {
             "Male": {"William": "en-AU-WilliamNeural"},
         },
         "India": {
-            "Female": {"Neerja": "en-IN-NeerjaNeural"},
-            "Male": {"Prabhat": "en-IN-PrabhatNeural"},
+            "Female": {
+                "Neerja — Natural": "en-IN-NeerjaNeural",
+                "Kavya — Soft": "en-IN-KavyaNeural",
+                "Ananya — Clear": "en-IN-AnanyaNeural",
+            },
+            "Male": {
+                "Prabhat — Deep": "en-IN-PrabhatNeural",
+                "Madhur — Friendly": "en-IN-MadhurNeural",
+            },
         },
     },
     "Hindi": {
         "India": {
-            "Female": {"Swara": "hi-IN-SwaraNeural"},
-            "Male": {"Madhur": "hi-IN-MadhurNeural"},
+            "Female": {
+                "Swara — Natural": "hi-IN-SwaraNeural",
+                "Kavya — Warm": "hi-IN-KavyaNeural",
+            },
+            "Male": {
+                "Madhur — Clear": "hi-IN-MadhurNeural",
+                "Prabhat — Deep": "hi-IN-PrabhatNeural",
+            },
         }
     },
     "Tamil": {
