@@ -5,11 +5,11 @@ const NAV_ITEMS = [
   { icon: '⊞', label: 'Home',           path: '/home' },
   { icon: '🎙️', label: 'Text to Speech', path: '/text-to-speech' },
   { icon: '🎤', label: 'Voice Cloning',  path: '/voice-clone' },
-  { icon: '🔊', label: 'Sound Effects',  path: '#' },
-  { icon: '🖼️', label: 'Image & Video',  path: '#' },
-  { icon: '🔀', label: 'Flows',          path: '#' },
-  { icon: '🎵', label: 'Music',          path: '#' },
-  { icon: '📝', label: 'Speech to Text', path: '#' },
+  { icon: '🔊', label: 'Sound Effects',  path: '/sound-effects' },
+  { icon: '🖼️', label: 'Image & Video',  path: '/image-video' },
+  { icon: '🔀', label: 'Flows',          path: '/flows' },
+  { icon: '🎵', label: 'Music',          path: '/music' },
+  { icon: '📝', label: 'Speech to Text', path: '/speech-to-text' },
 ]
 
 const PINNED = [
@@ -76,10 +76,10 @@ export default function Sidebar({ theme, onThemeToggle }) {
           </div>
         </button>
 
-        <button className="sidebar-link">
+        <button className="sidebar-link" onClick={() => go('/developers')}>
           <span className="icon">👨‍💻</span>Developers
         </button>
-        <button className="sidebar-link">
+        <button className="sidebar-link" onClick={() => go('/upgrade')}>
           <span className="icon">⬆️</span>Upgrade
         </button>
       </div>
