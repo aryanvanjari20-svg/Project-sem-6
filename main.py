@@ -53,6 +53,9 @@ VOICE_DB = {
                 "Michelle — Warm": "en-US-MichelleNeural",
                 "Ava — Soft": "en-US-AvaNeural",
                 "Emma — Professional": "en-US-EmmaNeural",
+                "Ava — Expressive (Multilingual)": "en-US-AvaMultilingualNeural",
+                "Emma — Cheerful (Multilingual)": "en-US-EmmaMultilingualNeural",
+                "Ana — Cute (Child)": "en-US-AnaNeural",
             },
             "Male": {
                 "Guy — Casual": "en-US-GuyNeural",
@@ -62,6 +65,8 @@ VOICE_DB = {
                 "Roger — Bold": "en-US-RogerNeural",
                 "Andrew — Friendly": "en-US-AndrewNeural",
                 "Brian — Deep": "en-US-BrianNeural",
+                "Andrew — Warm (Multilingual)": "en-US-AndrewMultilingualNeural",
+                "Brian — Sincere (Multilingual)": "en-US-BrianMultilingualNeural",
             },
         },
         "United Kingdom": {
@@ -70,6 +75,7 @@ VOICE_DB = {
                 "Libby — Bright": "en-GB-LibbyNeural",
                 "Maisie — Soft": "en-GB-MaisieNeural",
                 "Abbi — Natural": "en-GB-AbbiNeural",
+                "Hollie — Clear": "en-GB-HollieNeural",
             },
             "Male": {
                 "Ryan — Natural": "en-GB-RyanNeural",
@@ -79,11 +85,15 @@ VOICE_DB = {
         },
         "Australia": {
             "Female": {"Natasha": "en-AU-NatashaNeural"},
-            "Male": {"William": "en-AU-WilliamNeural"},
+            "Male": {
+                "William": "en-AU-WilliamNeural",
+                "William — Friendly (Multilingual)": "en-AU-WilliamMultilingualNeural"
+            },
         },
         "India": {
             "Female": {
                 "Neerja — Natural": "en-IN-NeerjaNeural",
+                "Neerja — Expressive": "en-IN-NeerjaExpressiveNeural",
                 "Kavya — Soft": "en-IN-KavyaNeural",
                 "Ananya — Clear": "en-IN-AnanyaNeural",
             },
@@ -127,15 +137,46 @@ VOICE_DB = {
         "Mexico": {"Female": {"Dalia": "es-MX-DaliaNeural"}, "Male": {"Jorge": "es-MX-JorgeNeural"}},
     },
     "French": {
-        "France": {"Female": {"Denise": "fr-FR-DeniseNeural"}, "Male": {"Henri": "fr-FR-HenriNeural"}},
+        "France": {
+            "Female": {
+                "Denise — Natural": "fr-FR-DeniseNeural",
+                "Vivienne — Friendly (Multilingual)": "fr-FR-VivienneMultilingualNeural",
+            },
+            "Male": {
+                "Henri — Formal": "fr-FR-HenriNeural",
+                "Remy — Warm (Multilingual)": "fr-FR-RemyMultilingualNeural",
+            },
+        },
         "Canada": {"Female": {"Sylvie": "fr-CA-SylvieNeural"}, "Male": {"Jean": "fr-CA-JeanNeural"}},
     },
     "German": {
-        "Germany": {"Female": {"Katja": "de-DE-KatjaNeural"}, "Male": {"Conrad": "de-DE-ConradNeural"}},
+        "Germany": {
+            "Female": {
+                "Katja — Clear": "de-DE-KatjaNeural",
+                "Seraphina — Friendly (Multilingual)": "de-DE-SeraphinaMultilingualNeural",
+            },
+            "Male": {
+                "Conrad — Bold": "de-DE-ConradNeural",
+                "Florian — Warm (Multilingual)": "de-DE-FlorianMultilingualNeural",
+            },
+        },
     },
-    "Italian": {"Italy": {"Female": {"Elsa": "it-IT-ElsaNeural"}, "Male": {"Diego": "it-IT-DiegoNeural"}}},
+    "Italian": {
+        "Italy": {
+            "Female": {"Elsa": "it-IT-ElsaNeural"},
+            "Male": {
+                "Diego": "it-IT-DiegoNeural",
+                "Giuseppe — Friendly (Multilingual)": "it-IT-GiuseppeMultilingualNeural"
+            }
+        }
+    },
     "Portuguese": {
-        "Brazil": {"Female": {"Francisca": "pt-BR-FranciscaNeural"}, "Male": {"Antonio": "pt-BR-AntonioNeural"}},
+        "Brazil": {
+            "Female": {
+                "Francisca": "pt-BR-FranciscaNeural",
+                "Thalita — Friendly (Multilingual)": "pt-BR-ThalitaMultilingualNeural"
+            },
+            "Male": {"Antonio": "pt-BR-AntonioNeural"}},
         "Portugal": {"Female": {"Raquel": "pt-PT-RaquelNeural"}, "Male": {"Duarte": "pt-PT-DuarteNeural"}},
     },
     "Japanese": {"Japan": {"Female": {"Nanami": "ja-JP-NanamiNeural"}, "Male": {"Keita": "ja-JP-KeitaNeural"}}},
@@ -143,7 +184,15 @@ VOICE_DB = {
         "Mainland China": {"Female": {"Xiaoxiao": "zh-CN-XiaoxiaoNeural"}, "Male": {"Yunxi": "zh-CN-YunxiNeural"}},
         "Taiwan": {"Female": {"HsiaoChen": "zh-TW-HsiaoChenNeural"}, "Male": {"YunJhe": "zh-TW-YunJheNeural"}},
     },
-    "Korean": {"South Korea": {"Female": {"Sun-Hi": "ko-KR-SunHiNeural"}, "Male": {"InJoon": "ko-KR-InJoonNeural"}}},
+    "Korean": {
+        "South Korea": {
+            "Female": {"Sun-Hi": "ko-KR-SunHiNeural"},
+            "Male": {
+                "InJoon": "ko-KR-InJoonNeural",
+                "Hyunsu — Friendly (Multilingual)": "ko-KR-HyunsuMultilingualNeural"
+            }
+        }
+    },
     "Arabic": {
         "Saudi Arabia": {"Female": {"Aisha": "ar-SA-AishaNeural"}, "Male": {"Hamed": "ar-SA-HamedNeural"}},
         "Egypt": {"Female": {"Salma": "ar-EG-SalmaNeural"}, "Male": {"Shakir": "ar-EG-ShakirNeural"}},
