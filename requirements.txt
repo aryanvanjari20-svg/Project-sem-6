@@ -5,3 +5,6 @@ python-multipart
 torch
 openvoice
 melo-tts
+chatterbox-tts
+torchaudio
+groq

@@ -104,144 +104,154 @@ export default function TextToSpeech() {
   return (
     <>
       <div className="topbar">
-        <span className="topbar-label">Text to Speech</span>
+        <span className="topbar-label">Module / Text to Speech</span>
         <div className="topbar-actions">
-          <span className="badge badge-orange">🎙️ Edge TTS · Neural</span>
+          <span className="badge badge-orange">ENGINE: NEURAL_EDGE_V4</span>
         </div>
       </div>
 
-      <div className="tts-layout">
-
+      <div className="tts-layout" style={{ gap: 1 }}>
         {/* ── Left panel: Voice settings ─────────────────────────────────── */}
-        <aside className="tts-panel">
-          <span className="panel-title">Voice Settings</span>
+        <aside className="tts-panel" style={{ background: 'var(--bg-sidebar)', border: '1px solid var(--border)', borderRadius: 0, padding: 24 }}>
+          <span className="panel-title" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 12, letterSpacing: 1, marginBottom: 24, display: 'block' }}>
+            Configuration
+          </span>
 
           <div className="form-group">
-            <label className="form-label">Language</label>
-            <select id="sel-language" className="form-select" value={language} onChange={e => setLanguage(e.target.value)}>
+            <label className="form-label" style={{ fontSize: 10, textTransform: 'uppercase', color: 'var(--text-faint)', fontWeight: 700 }}>Language</label>
+            <select id="sel-language" className="form-select" value={language} onChange={e => setLanguage(e.target.value)}
+                    style={{ borderRadius: 0, border: '1px solid var(--border)', background: 'var(--bg-input)' }}>
               {languages.map(l => <option key={l} value={l}>{l}</option>)}
             </select>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Region</label>
-            <select id="sel-region" className="form-select" value={region} onChange={e => setRegion(e.target.value)}>
+            <label className="form-label" style={{ fontSize: 10, textTransform: 'uppercase', color: 'var(--text-faint)', fontWeight: 700 }}>Region</label>
+            <select id="sel-region" className="form-select" value={region} onChange={e => setRegion(e.target.value)}
+                    style={{ borderRadius: 0, border: '1px solid var(--border)', background: 'var(--bg-input)' }}>
               {regions.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Gender</label>
-            <select id="sel-gender" className="form-select" value={gender} onChange={e => setGender(e.target.value)}>
+            <label className="form-label" style={{ fontSize: 10, textTransform: 'uppercase', color: 'var(--text-faint)', fontWeight: 700 }}>Gender</label>
+            <select id="sel-gender" className="form-select" value={gender} onChange={e => setGender(e.target.value)}
+                    style={{ borderRadius: 0, border: '1px solid var(--border)', background: 'var(--bg-input)' }}>
               {genders.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Voice</label>
-            <select id="sel-voice" className="form-select" value={voiceName} onChange={e => handleVoiceName(e.target.value)}>
+            <label className="form-label" style={{ fontSize: 10, textTransform: 'uppercase', color: 'var(--text-faint)', fontWeight: 700 }}>Voice Model</label>
+            <select id="sel-voice" className="form-select" value={voiceName} onChange={e => handleVoiceName(e.target.value)}
+                    style={{ borderRadius: 0, border: '1px solid var(--border)', background: 'var(--bg-input)' }}>
               {voices.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
           </div>
 
-          {voiceCode && (
-            <div style={{ fontSize: 11, color: 'var(--text-faint)', fontFamily: 'monospace' }}>
-              {voiceCode}
-            </div>
-          )}
-
-          <div className="divider" />
-          <span className="panel-title">Audio Controls</span>
+          <div className="divider" style={{ margin: '24px 0', borderColor: 'var(--border)' }} />
+          
+          <span className="panel-title" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 12, letterSpacing: 1, marginBottom: 24, display: 'block' }}>
+            Signal Processing
+          </span>
 
           {[
             { label: 'Speed',  value: rate,   set: setRate,   min: -50, max: 100, unit: '%' },
             { label: 'Pitch',  value: pitch,  set: setPitch,  min: -50, max: 50,  unit: 'Hz' },
             { label: 'Volume', value: volume, set: setVolume, min: -50, max: 50,  unit: '%' },
           ].map(({ label, value, set, min, max, unit }) => (
-            <div key={label} className="slider-row">
-              <span className="slider-label">{label}</span>
+            <div key={label} className="slider-row" style={{ marginBottom: 16 }}>
+              <span className="slider-label" style={{ fontSize: 10, textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>{label}</span>
               <input
                 id={`slider-${label.toLowerCase()}`}
                 type="range"
                 min={min} max={max} step={5}
                 value={value}
                 onChange={e => set(Number(e.target.value))}
+                style={{ height: 4, background: 'var(--border)' }}
               />
-              <span className="slider-value">{value > 0 ? '+' : ''}{value}{unit}</span>
+              <span className="slider-value" style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--accent)', width: 40, textAlign: 'right' }}>
+                {value > 0 ? '+' : ''}{value}
+              </span>
             </div>
           ))}
         </aside>
 
         {/* ── Right panel: Script + output ───────────────────────────────── */}
-        <div className="tts-main">
-          <span className="panel-title">Script</span>
+        <div className="tts-main" style={{ padding: 32, background: 'var(--bg-app)', border: '1px solid var(--border)', borderLeft: 'none' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <span className="panel-title" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 12, letterSpacing: 1 }}>
+              Input Script
+            </span>
+            <div className="tts-char-count" style={{ fontSize: 10, fontFamily: 'monospace', color: 'var(--text-faint)' }}>
+              LEN: {text.length.toLocaleString()} CHR
+            </div>
+          </div>
 
           <textarea
             id="tts-textarea"
             className="tts-textarea"
-            placeholder="Type or paste your text here…"
+            placeholder="INPUT_DATA_STREAM..."
             value={text}
             onChange={e => setText(e.target.value)}
+            style={{ borderRadius: 0, border: '1px solid var(--border)', background: 'var(--bg-panel)', padding: 20, minHeight: 300, fontFamily: 'Plus Jakarta Sans' }}
           />
-          <div className="tts-char-count">{text.length.toLocaleString()} characters</div>
 
-          {error && <div className="alert alert-error">⚠ {error}</div>}
+          {error && <div className="alert alert-error" style={{ borderRadius: 0, border: '1px solid #ef4444', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', fontSize: 12, padding: 12, marginTop: 16 }}>
+            ERROR_LOG: {error}
+          </div>}
 
-          <button
-            id="btn-generate"
-            className="btn btn-primary btn-full"
-            onClick={generate}
-            disabled={loading || !voiceCode}
-          >
-            {loading ? <><span className="spinner" /> Generating…</> : '🎤 Generate Speech'}
-          </button>
+          <div style={{ marginTop: 24 }}>
+            <button
+              id="btn-generate"
+              className="btn btn-primary btn-full"
+              onClick={generate}
+              disabled={loading || !voiceCode}
+              style={{ height: 56, fontSize: 14 }}
+            >
+              {loading ? 'STATUS: PROCESSING...' : 'EXECUTE_SYNTHESIS'}
+            </button>
+          </div>
 
           {result && (
-            <div className="audio-section">
-              <span className="audio-label">
-                🎧 Output · {voiceName} · {language} ({region}) · {gender}
-              </span>
+            <div className="audio-section" style={{ marginTop: 48, padding: 24, border: '1px solid var(--accent)', background: 'var(--accent-dim)' }}>
+              <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+                <span className="audio-label" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 11, color: 'var(--accent)' }}>
+                  Output Stream · {voiceName}
+                </span>
+                <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'var(--accent)' }}>READY_FOR_PLAYBACK</span>
+              </div>
 
-              <audio id="audio-player" controls src={result.audio_url} />
+              <audio id="audio-player" controls src={result.audio_url} style={{ width: '100%', filter: 'invert(1) hue-rotate(180deg)' }} />
 
-              <div className="download-row">
+              <div className="download-row" style={{ marginTop: 20, gap: 8 }}>
                 <button
                   id="btn-dl-mp3"
                   className="btn btn-secondary btn-sm"
                   onClick={() => downloadFile(result.audio_url, 'speech.mp3', 'audio/mpeg')}
+                  style={{ flex: 1 }}
                 >
-                  ⬇ MP3
+                  DL_MP3
                 </button>
                 {result.vtt && (
                   <button
                     id="btn-dl-vtt"
                     className="btn btn-secondary btn-sm"
                     onClick={() => downloadText(result.vtt, 'subtitles.vtt')}
+                    style={{ flex: 1 }}
                   >
-                    ⬇ VTT
+                    DL_VTT
                   </button>
                 )}
                 <button
                   id="btn-dl-srt"
                   className="btn btn-secondary btn-sm"
                   onClick={() => downloadFile(`${API}/api/srt`, 'subtitles.srt', 'text/plain')}
+                  style={{ flex: 1 }}
                 >
-                  ⬇ SRT
+                  DL_SRT
                 </button>
-                {result.srt && (
-                  <button
-                    id="btn-captions"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => setShowCaptions(v => !v)}
-                  >
-                    {showCaptions ? 'Hide' : 'Preview'} Captions
-                  </button>
-                )}
               </div>
-
-              {showCaptions && result.srt && (
-                <pre className="captions-box">{result.srt}</pre>
-              )}
             </div>
           )}
         </div>

@@ -14,17 +14,49 @@ from dotenv import load_dotenv
 load_dotenv()
 warnings.filterwarnings("ignore")
 
-# Point pydub to real ffmpeg/ffprobe (winget install path)
-import pydub.utils as _pydub_utils
-from pydub import AudioSegment as _AudioSegment
-_FFMPEG_BIN = r"C:\Users\sidva\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1-full_build\bin"
-_FFMPEG = _FFMPEG_BIN + r"\ffmpeg.exe"
-_FFPROBE = _FFMPEG_BIN + r"\ffprobe.exe"
-_pydub_utils.get_encoder_name = lambda: _FFMPEG
-_pydub_utils.get_prober_name = lambda: _FFPROBE
-_AudioSegment.converter = _FFMPEG
-_AudioSegment.ffmpeg = _FFMPEG
-_AudioSegment.ffprobe = _FFPROBE
+# ── FFmpeg Configuration ──────────────────────────────────────────────────────
+import shutil
+import os
+
+def find_ffmpeg():
+    # 1. Try system PATH
+    path = shutil.which("ffmpeg")
+    if path:
+        return str(Path(path).parent)
+    
+    # 2. Try common winget path for current user
+    try:
+        user_name = os.getlogin()
+        winget_base = Path(f"C:/Users/{user_name}/AppData/Local/Microsoft/WinGet/Packages")
+        if winget_base.exists():
+            # Look for Gyan.FFmpeg folder
+            ffmpeg_folders = list(winget_base.glob("Gyan.FFmpeg*"))
+            if ffmpeg_folders:
+                # Find bin folder inside
+                bin_paths = list(ffmpeg_folders[0].rglob("bin"))
+                if bin_paths:
+                    return str(bin_paths[0])
+    except Exception:
+        pass
+    
+    # 3. Fallback to a default or original path (might still fail)
+    return r"C:\ffmpeg\bin"
+
+_FFMPEG_BIN = find_ffmpeg()
+_FFMPEG = os.path.join(_FFMPEG_BIN, "ffmpeg.exe")
+_FFPROBE = os.path.join(_FFMPEG_BIN, "ffprobe.exe")
+
+# Temporarily disable pydub to avoid import errors
+# try:
+#     import pydub.utils as _pydub_utils
+#     from pydub import AudioSegment as _AudioSegment
+#     _pydub_utils.get_encoder_name = lambda: _FFMPEG
+#     _pydub_utils.get_prober_name = lambda: _FFPROBE
+#     _AudioSegment.converter = _FFMPEG
+#     _AudioSegment.ffmpeg = _FFMPEG
+#     _AudioSegment.ffprobe = _FFPROBE
+# except ImportError:
+#     pass
 
 app = FastAPI(title="TTS API")
 
@@ -94,47 +126,82 @@ VOICE_DB = {
             "Female": {
                 "Neerja — Natural": "en-IN-NeerjaNeural",
                 "Neerja — Expressive": "en-IN-NeerjaExpressiveNeural",
-                "Kavya — Soft": "en-IN-KavyaNeural",
                 "Ananya — Clear": "en-IN-AnanyaNeural",
             },
             "Male": {
                 "Prabhat — Deep": "en-IN-PrabhatNeural",
-                "Madhur — Friendly": "en-IN-MadhurNeural",
             },
         },
+        "Canada": {
+            "Female": {"Clara": "en-CA-ClaraNeural"},
+            "Male": {"Liam": "en-CA-LiamNeural"}
+        },
+        "Ireland": {
+            "Female": {"Emily": "en-IE-EmilyNeural"},
+            "Male": {"Connor": "en-IE-ConnorNeural"}
+        },
+        "South Africa": {
+            "Female": {"Leah": "en-ZA-LeahNeural"},
+            "Male": {"Luke": "en-ZA-LukeNeural"}
+        }
     },
     "Hindi": {
         "India": {
             "Female": {
                 "Swara — Natural": "hi-IN-SwaraNeural",
-                "Kavya — Warm": "hi-IN-KavyaNeural",
+                "Kavya — Clear": "hi-IN-KavyaNeural",
             },
             "Male": {
                 "Madhur — Clear": "hi-IN-MadhurNeural",
-                "Prabhat — Deep": "hi-IN-PrabhatNeural",
             },
         }
     },
+    "Marathi": {
+        "India": {
+            "Female": { "Aarohi": "mr-IN-AarohiNeural" },
+            "Male": { "Manohar": "mr-IN-ManoharNeural" }
+        }
+    },
     "Tamil": {
-        "India": {"Female": {"Pallavi": "ta-IN-PallaviNeural"}, "Male": {"Valluvar": "ta-IN-ValluvarNeural"}},
-        "Malaysia": {"Female": {"Kani": "ta-MY-KaniNeural"}, "Male": {"Surya": "ta-MY-SuryaNeural"}},
+        "India": {
+            "Female": { "Pallavi": "ta-IN-PallaviNeural" },
+            "Male": { "Valluvar": "ta-IN-ValluvarNeural" }
+        }
     },
-    "Telugu": {"India": {"Female": {"Shruti": "te-IN-ShrutiNeural"}, "Male": {"Mohan": "te-IN-MohanNeural"}}},
+    "Telugu": {
+        "India": {
+            "Female": { "Shruti": "te-IN-ShrutiNeural" },
+            "Male": { "Mohan": "te-IN-MohanNeural" }
+        }
+    },
     "Bengali": {
-        "India": {"Female": {"Tanishaa": "bn-IN-TanishaaNeural"}, "Male": {"Bashkar": "bn-IN-BashkarNeural"}},
-        "Bangladesh": {"Female": {"Nabanita": "bn-BD-NabanitaNeural"}, "Male": {"Pradeep": "bn-BD-PradeepNeural"}},
+        "India": {
+            "Female": { "Tanishaa": "bn-IN-TanishaaNeural" },
+            "Male": { "Bashkar": "bn-IN-BashkarNeural" }
+        }
     },
-    "Marathi": {"India": {"Female": {"Aarohi": "mr-IN-AarohiNeural"}, "Male": {"Manohar": "mr-IN-ManoharNeural"}}},
-    "Gujarati": {"India": {"Female": {"Dhwani": "gu-IN-DhwaniNeural"}, "Male": {"Niranjan": "gu-IN-NiranjanNeural"}}},
-    "Kannada": {"India": {"Female": {"Sapna": "kn-IN-SapnaNeural"}, "Male": {"Gagan": "kn-IN-GaganNeural"}}},
-    "Malayalam": {"India": {"Female": {"Sobhana": "ml-IN-SobhanaNeural"}, "Male": {"Midhun": "ml-IN-MidhunNeural"}}},
-    "Urdu": {
-        "India": {"Female": {"Gul": "ur-IN-GulNeural"}, "Male": {"Salman": "ur-IN-SalmanNeural"}},
-        "Pakistan": {"Female": {"Uzma": "ur-PK-UzmaNeural"}, "Male": {"Asad": "ur-PK-AsadNeural"}},
+    "Gujarati": {
+        "India": {
+            "Female": { "Dhwani": "gu-IN-DhwaniNeural" },
+            "Male": { "Niranjan": "gu-IN-NiranjanNeural" }
+        }
+    },
+    "Kannada": {
+        "India": {
+            "Female": { "Sapna": "kn-IN-SapnaNeural" },
+            "Male": { "Gagan": "kn-IN-GaganNeural" }
+        }
+    },
+    "Malayalam": {
+        "India": {
+            "Female": { "Sobhana": "ml-IN-SobhanaNeural" },
+            "Male": { "Midhun": "ml-IN-MidhunNeural" }
+        }
     },
     "Spanish": {
         "Spain": {"Female": {"Elvira": "es-ES-ElviraNeural"}, "Male": {"Alvaro": "es-ES-AlvaroNeural"}},
         "Mexico": {"Female": {"Dalia": "es-MX-DaliaNeural"}, "Male": {"Jorge": "es-MX-JorgeNeural"}},
+        "United States": {"Female": {"Paloma": "es-US-PalomaNeural"}, "Male": {"Alonso": "es-US-AlonsoNeural"}}
     },
     "French": {
         "France": {
@@ -148,6 +215,8 @@ VOICE_DB = {
             },
         },
         "Canada": {"Female": {"Sylvie": "fr-CA-SylvieNeural"}, "Male": {"Jean": "fr-CA-JeanNeural"}},
+        "Belgium": {"Female": {"Estelle": "fr-BE-EstelleNeural"}, "Male": {"Gerard": "fr-BE-GerardNeural"}},
+        "Switzerland": {"Female": {"Ariane": "fr-CH-ArianeNeural"}, "Male": {"Fabrice": "fr-CH-FabriceNeural"}}
     },
     "German": {
         "Germany": {
@@ -160,10 +229,12 @@ VOICE_DB = {
                 "Florian — Warm (Multilingual)": "de-DE-FlorianMultilingualNeural",
             },
         },
+        "Austria": {"Female": {"Ingrid": "de-AT-IngridNeural"}, "Male": {"Jonas": "de-AT-JonasNeural"}},
+        "Switzerland": {"Female": {"Leni": "de-CH-LeniNeural"}, "Male": {"Jan": "de-CH-JanNeural"}}
     },
     "Italian": {
         "Italy": {
-            "Female": {"Elsa": "it-IT-ElsaNeural"},
+            "Female": {"Elsa": "it-IT-ElsaNeural", "Isabella": "it-IT-IsabellaNeural"},
             "Male": {
                 "Diego": "it-IT-DiegoNeural",
                 "Giuseppe — Friendly (Multilingual)": "it-IT-GiuseppeMultilingualNeural"
@@ -179,26 +250,35 @@ VOICE_DB = {
             "Male": {"Antonio": "pt-BR-AntonioNeural"}},
         "Portugal": {"Female": {"Raquel": "pt-PT-RaquelNeural"}, "Male": {"Duarte": "pt-PT-DuarteNeural"}},
     },
-    "Japanese": {"Japan": {"Female": {"Nanami": "ja-JP-NanamiNeural"}, "Male": {"Keita": "ja-JP-KeitaNeural"}}},
+    "Japanese": {"Japan": {"Female": {"Nanami": "ja-JP-NanamiNeural", "Aoi": "ja-JP-AoiNeural"}, "Male": {"Keita": "ja-JP-KeitaNeural", "Daichi": "ja-JP-DaichiNeural"}}},
     "Chinese": {
-        "Mainland China": {"Female": {"Xiaoxiao": "zh-CN-XiaoxiaoNeural"}, "Male": {"Yunxi": "zh-CN-YunxiNeural"}},
+        "Mainland China": {"Female": {"Xiaoxiao": "zh-CN-XiaoxiaoNeural", "Xiaoyi": "zh-CN-XiaoyiNeural"}, "Male": {"Yunxi": "zh-CN-YunxiNeural", "Yunjian": "zh-CN-YunjianNeural"}},
         "Taiwan": {"Female": {"HsiaoChen": "zh-TW-HsiaoChenNeural"}, "Male": {"YunJhe": "zh-TW-YunJheNeural"}},
+        "Hong Kong": {"Female": {"HiuGaai": "zh-HK-HiuGaaiNeural"}, "Male": {"WanLung": "zh-HK-WanLungNeural"}}
     },
+    "Arabic": {
+        "Saudi Arabia": {"Female": {"Zariyah": "ar-SA-ZariyahNeural"}, "Male": {"Hamed": "ar-SA-HamedNeural"}},
+        "Egypt": {"Female": {"Salma": "ar-EG-SalmaNeural"}, "Male": {"Shakir": "ar-EG-ShakirNeural"}},
+        "UAE": {"Female": {"Fatima": "ar-AE-FatimaNeural"}, "Male": {"Hamdan": "ar-AE-HamdanNeural"}}
+    },
+    "Russian": {"Russia": {"Female": {"Svetlana": "ru-RU-SvetlanaNeural", "Dariya": "ru-RU-DariyaNeural"}, "Male": {"Dmitry": "ru-RU-DmitryNeural"}}},
     "Korean": {
         "South Korea": {
-            "Female": {"Sun-Hi": "ko-KR-SunHiNeural"},
+            "Female": {"Sun-Hi": "ko-KR-SunHiNeural", "Ji-Min": "ko-KR-JiMinNeural"},
             "Male": {
                 "InJoon": "ko-KR-InJoonNeural",
                 "Hyunsu — Friendly (Multilingual)": "ko-KR-HyunsuMultilingualNeural"
             }
         }
     },
-    "Arabic": {
-        "Saudi Arabia": {"Female": {"Aisha": "ar-SA-AishaNeural"}, "Male": {"Hamed": "ar-SA-HamedNeural"}},
-        "Egypt": {"Female": {"Salma": "ar-EG-SalmaNeural"}, "Male": {"Shakir": "ar-EG-ShakirNeural"}},
+    "Urdu": {
+        "India": {
+            "Female": { "Gul": "ur-IN-GulNeural" },
+            "Male": { "Salman": "ur-IN-SalmanNeural" }
+        }
     },
-    "Russian": {"Russia": {"Female": {"Svetlana": "ru-RU-SvetlanaNeural"}, "Male": {"Dmitry": "ru-RU-DmitryNeural"}}},
 }
+
 
 
 # ── Subtitle helpers ───────────────────────────────────────────────────────────
@@ -369,6 +449,39 @@ def get_srt():
     if not srt_path.exists():
         raise HTTPException(status_code=404, detail="No SRT generated yet.")
     return FileResponse(str(srt_path), media_type="text/plain", filename="subtitles.srt")
+
+# ── Resemble AI Chatterbox ────────────────────────────────────────────────────
+@app.post("/api/chatterbox-clone")
+async def chatterbox_clone(text: str = Form(...), file: UploadFile = File(...)):
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty.")
+
+    ref_path = CLONE_DIR / f"cb_ref_{file.filename}"
+    with open(ref_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    output_path = str(CLONE_DIR / "cb_cloned_output.wav")
+
+    try:
+        import torchaudio as ta
+        import torch
+        from chatterbox.tts_turbo import ChatterboxTurboTTS
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        
+        global _chatterbox_model
+        if '_chatterbox_model' not in globals():
+            _chatterbox_model = ChatterboxTurboTTS.from_pretrained(device=device)
+
+        wav = _chatterbox_model.generate(text, audio_prompt_path=str(ref_path))
+        ta.save(output_path, wav, _chatterbox_model.sr)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return FileResponse(output_path, media_type="audio/wav", filename="cb_cloned_speech.wav")
 
 
 # ── AI Chatbot ────────────────────────────────────────────────────────────────

@@ -40,21 +40,26 @@ export default function Home() {
     <>
       {/* Top bar */}
       <div className="topbar">
-        <span className="topbar-label">My Workspace</span>
+        <span className="topbar-label">Workspace / Dashboard</span>
         <div className="topbar-actions">
-          <button className="topbar-pill">✨ New · Introducing Music Marketplace</button>
+          <div className="badge badge-orange">PRO SYSTEM ACTIVE</div>
         </div>
       </div>
 
       {/* Greeting */}
-      <h1 className="greeting-title">{getGreeting()}, Sid</h1>
+      <div style={{ padding: '24px 0 48px' }}>
+        <h1 className="greeting-title" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 32 }}>
+          {getGreeting()}, Sid
+        </h1>
+        <p style={{ color: 'var(--text-muted)', marginTop: 8 }}>Select a module to begin audio processing.</p>
+      </div>
 
       {/* Tool Cards */}
-      <p className="section-heading">Workspace tools</p>
+      <p className="section-heading">Processing Modules</p>
       <div className="cards-grid">
-        {TOOL_CARDS.map(({ icon, label, bg, path }) => (
+        {TOOL_CARDS.map(({ icon, label, path }) => (
           <div className="tool-card" key={label} onClick={() => go(path)}>
-            <div className="tool-card-icon" style={{ background: bg }}>
+            <div className="tool-card-icon">
               {icon}
             </div>
             <span className="tool-card-label">{label}</span>
@@ -65,39 +70,39 @@ export default function Home() {
       {/* Two column split */}
       <div className="home-split">
         {/* Latest from the library */}
-        <div>
-          <p className="section-heading">Latest from the library</p>
+        <div style={{ border: '1px solid var(--border)', padding: 24, background: 'var(--bg-sidebar)' }}>
+          <p className="section-heading">Voice Registry</p>
           <div className="library-list">
             {LIBRARY_ITEMS.map(({ initials, color, name, desc }) => (
-              <div className="library-item" key={name}>
-                <div className="library-avatar" style={{ background: color + '33', color }}>
+              <div className="library-item" key={name} style={{ borderBottom: '1px solid var(--border)', paddingBottom: 16, marginBottom: 16 }}>
+                <div className="library-avatar" style={{ background: 'var(--bg-input)', color: 'var(--accent)', border: '1px solid var(--border)', borderRadius: 0 }}>
                   {initials}
                 </div>
                 <div className="library-meta">
-                  <div className="library-name">{name}</div>
-                  <div className="library-desc">{desc}</div>
+                  <div className="library-name" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 12 }}>{name}</div>
+                  <div className="library-desc" style={{ fontSize: 11 }}>{desc}</div>
                 </div>
               </div>
             ))}
           </div>
-          <br />
-          <button className="btn btn-secondary btn-sm" onClick={() => go('/text-to-speech')}>
-            Explore Library
+          <button className="btn btn-secondary btn-full btn-sm" onClick={() => go('/text-to-speech')}>
+            View All Voices
           </button>
         </div>
 
         {/* Create or clone a voice */}
-        <div>
-          <p className="section-heading">Create or clone a voice</p>
-          <div className="clone-grid">
-            {VOICE_CLONE_CARDS.map(({ icon, bg, label, subtitle, path }) => (
-              <div className="clone-item" key={label} onClick={() => go(path || '/text-to-speech')}>
-                <div className="clone-icon" style={{ background: bg + '33', color: bg }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <p className="section-heading">Cloning Interface</p>
+          <div className="clone-grid" style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {VOICE_CLONE_CARDS.map(({ icon, label, subtitle, path }) => (
+              <div className="clone-item" key={label} onClick={() => go(path || '/text-to-speech')} 
+                   style={{ background: 'var(--bg-sidebar)', border: '1px solid var(--border)', borderRadius: 0, padding: 20 }}>
+                <div className="clone-icon" style={{ background: 'var(--bg-input)', borderRadius: 0, border: '1px solid var(--border)' }}>
                   {icon}
                 </div>
                 <div className="clone-meta">
-                  <div className="clone-title">{label}</div>
-                  <div className="clone-subtitle">{subtitle}</div>
+                  <div className="clone-title" style={{ fontFamily: 'Outfit', textTransform: 'uppercase', fontSize: 13 }}>{label}</div>
+                  <div className="clone-subtitle" style={{ fontSize: 11 }}>{subtitle}</div>
                 </div>
               </div>
             ))}

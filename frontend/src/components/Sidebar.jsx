@@ -28,11 +28,12 @@ export default function Sidebar({ theme, onThemeToggle }) {
     <aside className="sidebar">
       {/* Brand */}
       <div className="sidebar-brand">
-        <div className="sidebar-brand-icon">🎧</div>
+        <div className="sidebar-brand-icon">S</div>
         <span className="sidebar-brand-name">SoundStudio</span>
       </div>
 
       {/* Main Nav */}
+      <div className="sidebar-section-label">Audio Tools</div>
       {NAV_ITEMS.map(({ icon, label, path }) => (
         <button
           key={label}
@@ -46,22 +47,10 @@ export default function Sidebar({ theme, onThemeToggle }) {
 
       <div className="sidebar-spacer" />
 
-      <div className="sidebar-section-label">Pinned</div>
-      {PINNED.map(({ icon, label, path }) => (
-        <button
-          key={label}
-          className={`sidebar-link${pathname === path ? ' active' : ''}`}
-          onClick={() => go(path)}
-        >
-          <span className="icon">{icon}</span>
-          {label}
-        </button>
-      ))}
-
       {/* Bottom */}
       <div className="sidebar-bottom">
-        <div className="divider" style={{ marginBottom: 8 }} />
-
+        <div className="sidebar-section-label">System</div>
+        
         {/* Theme Toggle */}
         <button
           id="btn-theme-toggle"
@@ -70,7 +59,7 @@ export default function Sidebar({ theme, onThemeToggle }) {
           aria-label="Toggle light/dark theme"
         >
           <span>{isLight ? '☀️' : '🌙'}</span>
-          <span style={{ flex: 1 }}>{isLight ? 'Light' : 'Dark'} Mode</span>
+          <span style={{ flex: 1, textAlign: 'left', marginLeft: 12 }}>{isLight ? 'Light' : 'Dark'} Mode</span>
           <div className={`theme-toggle-track${isLight ? ' on' : ''}`}>
             <div className="theme-toggle-thumb" />
           </div>
@@ -80,7 +69,7 @@ export default function Sidebar({ theme, onThemeToggle }) {
           <span className="icon">👨‍💻</span>Developers
         </button>
         <button className="sidebar-link" onClick={() => go('/upgrade')}>
-          <span className="icon">⬆️</span>Upgrade
+          <span className="icon">⚡</span>Upgrade
         </button>
       </div>
     </aside>

@@ -9,7 +9,7 @@ export default function Developers() {
         <div className="team-grid">
           <div className="team-member">
             <div className="avatar">👨‍💻</div>
-            <h3>Aryan</h3>
+            <h3>Sid</h3>
             <p>Lead Developer</p>
           </div>
           {/* Add more members if needed */}
